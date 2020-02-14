@@ -17,6 +17,7 @@
   under the License.
 #}
 {% import 'appbuilder/general/lib.html' as lib %}
+{% import "superset/models/database/macros.html" as macros %}
 
 {% set can_add = "can_add" | is_item_visible(modelview_name) %}
 {% set can_show = "can_show" | is_item_visible(modelview_name) %}
@@ -63,3 +64,5 @@
 {% else %}
     <b>{{_("No records found")}}</b>
 {% endif %}
+
+{{ macros.testsql() }}
