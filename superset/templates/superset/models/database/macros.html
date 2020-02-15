@@ -88,7 +88,7 @@
     $("#SqlMetricInlineView").find("#expression").parent().append('<button id="testsql" class="btn btn-sm btn-primary">Test SQL Expression</button>');
     $("#testsql").click(function(e) {
       e.preventDefault();
-      var url = "/superset/testsql";
+      var url = "/superset/sql_json";
       var csrf_token = "{{ csrf_token() if csrf_token else '' }}";
 
       $.ajaxSetup({
@@ -99,22 +99,12 @@
         }
       });
 
-      var data = {};
-      const extra = "{\"query\":\"" + $("#SqlMetricInlineView").find("#expression").val() +"\"}";
-      const encryptedExtra = $("#encrypted_extra").val();
-      try{
-        data = JSON.stringify({
-          uri: $.trim($("#sqlalchemy_uri").val()),
-          name: $('#database_name').val(),
-          impersonate_user: $('#impersonate_user').is(':checked'),
-          extras: extra ? JSON.parse(extra) : {},
-          encrypted_extra: encryptedExtra ? JSON.parse(encryptedExtra) : {},
-        })
-      } catch(parse_error){
-        alert("Malformed JSON in the extras field: " + parse_error);
-        return false
-      }
-
+      var data = JSON.stringify({
+        "database_id": 1,
+        "schema": $("#schema").val(),
+        "sql": "SELECT " + $("#SqlMetricInlineView").find("#expression").val() + " FROM "+ $("#table_name").val()+" LIMIT 1",
+      });
+      
       $.ajax({
         method: "POST",
         url: url,
